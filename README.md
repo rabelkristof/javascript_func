@@ -1,2 +1,2 @@
 # javascript_func
-helló
+szia
