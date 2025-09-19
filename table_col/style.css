@@ -7,3 +7,23 @@ td {
     border: 1px solid black;
     border-collapse: collapse;
 }
+
+thead {
+    background-color: chartreuse;
+}
+
+thead+tbody tr {
+    background-color: aqua;
+}
+
+tbody>tr {
+    background-color: hotpink;
+}
+
+table>tbody>tr:nth-child(2n) {
+    background-color: deeppink;
+}
+
+tbody>tr:hover {
+    background-color: gold;
+}
