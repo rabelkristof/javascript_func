@@ -6,7 +6,29 @@ th {
     border-collapse: collapse;
 }
 
-tr>td:nth-last-child(3),
-tr>td:last-child {
-    background-color: red;
+tr td:nth-last-child(3),
+tr td:last-child {
+    background-color: magenta;
+}
+
+#gyakorlas {
+    background-color: dodgerblue;
+}
+
+button:has(+p) {
+    background-color: lime;
+}
+
+button:not(:has(+p)) {
+    background-color: darkorchid;
+}
+
+#gyakorlas:has(+a:hover) button {
+    color: white;
+}
+
+tr:hover>td,
+tr:has(>td[rowspan]):hover+tr>td,
+tr:has(>td[rowspan]):has(+tr:hover)>td {
+    background-color: yellow;
 }
