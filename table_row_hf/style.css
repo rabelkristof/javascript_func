@@ -1,0 +1,11 @@
+tbody > tr > td:nth-last-child(2n + 1) {
+  background-color: red;
+}
+
+tbody > tr:hover > td,
+tbody > tr:has(td[rowspan]):has(+ tr:hover) > td,
+tbody > tr:has(td[rowspan]):hover + tr > td {
+  font-weight: bold;
+  color: darkgoldenrod;
+  background-color: aqua;
+}
