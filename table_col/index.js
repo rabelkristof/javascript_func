@@ -17,7 +17,7 @@ const headers = [
 ];
 
 /**
- * @type {{name: string, korszak: string, szerelem1: string, szerelem2: string | undefined}[]}
+ * @type {{name: string, korszak: string, szerelem1: string, szerelem2?: string}[]}
  */
 const rows = [
   {
