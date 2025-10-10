@@ -24,6 +24,6 @@ table>tbody>tr:nth-child(2n) {
     background-color: deeppink;
 }
 
-tbody>tr:hover {
+table>tbody>tr:hover {
     background-color: gold;
 }
