@@ -89,3 +89,38 @@ function appendCellToParentRow(cellType, content, parentRow) {
 
   return child;
 }
+
+/**
+ * Hozzáfűz egy sort a fő táblázathoz.
+ * @param {{name: string, korszak: string, szerelem1: string, szerelem2?: string}} rowData
+ */
+function appendRowToTable(rowData) {
+  const row = document.createElement("tr");
+  tbody.appendChild(row);
+
+  appendCellToParentRow("td", rowData.name, row);
+  appendCellToParentRow("td", rowData.korszak, row);
+  let szerelem1 = appendCellToParentRow("td", rowData.szerelem1, row);
+  if (rowData.szerelem2) {
+    appendCellToParentRow("td", rowData.szerelem2, row);
+  } else {
+    szerelem1.colSpan = 2;
+  }
+}
+
+/**
+ *
+ * @param {SubmitEvent} event
+ */
+function onFormSubmit(event) {
+  event.preventDefault();
+
+  const name = /** @type {HTMLInputElement} */ (document.getElementById("kolto_nev")).value;
+  const korszak = /** @type {HTMLInputElement} */ (document.getElementById("korszak")).value;
+  const szerelem1 = /** @type {HTMLInputElement} */ (document.getElementById("szerelem1")).value;
+  const szerelem2 = /** @type {HTMLInputElement} */ (document.getElementById("szerelem2")).value;
+
+  appendRowToTable({ name, korszak, szerelem1, szerelem2: szerelem2 ? szerelem2 : undefined });
+}
+
+document.getElementById("form")?.addEventListener("submit", onFormSubmit);
