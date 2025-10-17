@@ -56,7 +56,7 @@ thead.appendChild(theadTr);
 table.appendChild(tbody);
 
 for (const header of headers) {
-  let currentHeader = appendToParentRow("th", header.title, theadTr);
+  let currentHeader = appendCellToParentRow("th", header.title, theadTr);
   if (header.width > 1) currentHeader.colSpan = header.width;
 }
 
@@ -64,12 +64,12 @@ for (const row of rows) {
   const currentRow = document.createElement("tr");
   tbody.appendChild(currentRow);
 
-  appendToParentRow("td", row.name, currentRow);
-  appendToParentRow("td", row.korszak, currentRow);
-  let szerelem1 = appendToParentRow("td", row.szerelem1, currentRow);
+  appendCellToParentRow("td", row.name, currentRow);
+  appendCellToParentRow("td", row.korszak, currentRow);
+  let szerelem1 = appendCellToParentRow("td", row.szerelem1, currentRow);
 
   if (row.szerelem2) {
-    appendToParentRow("td", row.szerelem2, currentRow);
+    appendCellToParentRow("td", row.szerelem2, currentRow);
   } else {
     szerelem1.colSpan = 2;
   }
@@ -77,16 +77,12 @@ for (const row of rows) {
 
 /**
  * Létrehoz egy elementet a cellType alapján, beállítjuk neki szövegként a content-et és hozzáfűzzük a parentRow-hoz.
- * @param {string} cellType th vagy td
+ * @param {("th" | "td")} cellType th vagy td
  * @param {string} content a szöveg ami bele legyen írva
  * @param {HTMLTableRowElement} parentRow a parent amihez appendeljük
  * @returns {HTMLTableCellElement} az element amit létrehoztunk
  */
-function appendToParentRow(cellType, content, parentRow) {
-  /**
-   * @type {HTMLTableCellElement}
-   */
-  //@ts-ignore
+function appendCellToParentRow(cellType, content, parentRow) {
   const child = document.createElement(cellType);
   child.innerText = content;
   parentRow.appendChild(child);
