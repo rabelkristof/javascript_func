@@ -50,37 +50,46 @@ document.body.appendChild(table);
 
 const thead = document.createElement("thead");
 const tbody = document.createElement("tbody");
+const theadTr = document.createElement("tr");
 table.appendChild(thead);
+thead.appendChild(theadTr);
 table.appendChild(tbody);
 
 for (const header of headers) {
-  const currentHeader = document.createElement("th");
-  currentHeader.innerText = header.title;
+  let currentHeader = appendToParentRow("th", header.title, theadTr);
   if (header.width > 1) currentHeader.colSpan = header.width;
-
-  thead.appendChild(currentHeader);
 }
 
 for (const row of rows) {
   const currentRow = document.createElement("tr");
   tbody.appendChild(currentRow);
 
-  const name = document.createElement("td");
-  const korszak = document.createElement("td");
-  const szerelem1 = document.createElement("td");
-  name.innerText = row.name;
-  korszak.innerText = row.korszak;
-  szerelem1.innerText = row.szerelem1;
-
-  currentRow.appendChild(name);
-  currentRow.appendChild(korszak);
-  currentRow.appendChild(szerelem1);
+  appendToParentRow("td", row.name, currentRow);
+  appendToParentRow("td", row.korszak, currentRow);
+  let szerelem1 = appendToParentRow("td", row.szerelem1, currentRow);
 
   if (row.szerelem2) {
-    const szerelem2 = document.createElement("td");
-    szerelem2.innerText = row.szerelem2;
-    currentRow.appendChild(szerelem2);
+    appendToParentRow("td", row.szerelem2, currentRow);
   } else {
     szerelem1.colSpan = 2;
   }
+}
+
+/**
+ * Létrehoz egy elementet a cellType alapján, beállítjuk neki szövegként a content-et és hozzáfűzzük a parentRow-hoz.
+ * @param {string} cellType th vagy td
+ * @param {string} content a szöveg ami bele legyen írva
+ * @param {HTMLTableRowElement} parentRow a parent amihez appendeljük
+ * @returns {HTMLTableCellElement} az element amit létrehoztunk
+ */
+function appendToParentRow(cellType, content, parentRow) {
+  /**
+   * @type {HTMLTableCellElement}
+   */
+  //@ts-ignore
+  const child = document.createElement(cellType);
+  child.innerText = content;
+  parentRow.appendChild(child);
+
+  return child;
 }

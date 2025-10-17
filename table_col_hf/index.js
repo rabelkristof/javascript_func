@@ -1,5 +1,5 @@
 /**
- * @type {{theme: string, time: string, scientist1: string, scientist2: string | undefined}[]}
+ * @type {{theme: string, time: string, scientist1: string, scientist2?: string}[]}
  */
 const arr = [
   {
