@@ -45,15 +45,10 @@ const rows = [
   },
 ];
 
-const table = document.createElement("table");
-document.body.appendChild(table);
-
-const thead = document.createElement("thead");
-const tbody = document.createElement("tbody");
-const theadTr = document.createElement("tr");
-table.appendChild(thead);
-thead.appendChild(theadTr);
-table.appendChild(tbody);
+const table = createAndAppendElementToParent("table", document.body);
+const thead = createAndAppendElementToParent("thead", table);
+const tbody = createAndAppendElementToParent("tbody", table);
+const theadTr = createAndAppendElementToParent("tr", thead);
 
 for (const header of headers) {
   let currentHeader = appendCellToParentRow("th", header.title, theadTr);
@@ -61,8 +56,7 @@ for (const header of headers) {
 }
 
 for (const row of rows) {
-  const currentRow = document.createElement("tr");
-  tbody.appendChild(currentRow);
+  const currentRow = createAndAppendElementToParent("tr", tbody);
 
   appendCellToParentRow("td", row.name, currentRow);
   appendCellToParentRow("td", row.korszak, currentRow);
@@ -77,7 +71,7 @@ for (const row of rows) {
 
 /**
  * Létrehoz egy elementet a cellType alapján, beállítjuk neki szövegként a content-et és hozzáfűzzük a parentRow-hoz.
- * @param {("th" | "td")} cellType th vagy td
+ * @param {"th" | "td"} cellType th vagy td
  * @param {string} content a szöveg ami bele legyen írva
  * @param {HTMLTableRowElement} parentRow a parent amihez appendeljük
  * @returns {HTMLTableCellElement} az element amit létrehoztunk
@@ -88,6 +82,20 @@ function appendCellToParentRow(cellType, content, parentRow) {
   parentRow.appendChild(child);
 
   return child;
+}
+
+/**
+ * Létrehoz egy elemet az elementType alapján és hozzáfűzi a parent-hez.
+ * @template K
+ * @param {K extends keyof HTMLElementTagNameMap ? K : never} elementType az element amit létre akarunk hozni
+ * @param {HTMLElement} parent az element amihez hozzá akarunk fűzni
+ * @returns {HTMLElementTagNameMap[K]} az element amit létrehoztunk
+ */
+function createAndAppendElementToParent(elementType, parent) {
+  const elem = document.createElement(elementType);
+  parent.appendChild(elem);
+
+  return elem;
 }
 
 /**
