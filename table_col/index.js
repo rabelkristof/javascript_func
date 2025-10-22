@@ -145,3 +145,53 @@ function onFormSubmit(event) {
 }
 
 document.getElementById("form")?.addEventListener("submit", onFormSubmit);
+
+/**
+ * Létrehoz egy labelt a labelText szöveggel és egy inputot és hozzáfűzi a parent-hez.
+ * @param {string} inputId Az id amit az input id-ja, name-je és a label for-ja lesz.
+ * @param {string} labelText A szöveg amit a labelbe írunk.
+ * @param {HTMLFormElement} parent A form, amihez appendeljük.
+ * @param {boolean} lineBreak Rakjunk-e linebreaket közéjük (br tag)
+ * @returns {HTMLInputElement} A létrehozott input.
+ */
+function createLabelAndInputAndAppendToForm(
+  inputId,
+  labelText,
+  parent,
+  lineBreak
+) {
+  const label = createAndAppendElementToParent("label", parent);
+  if (lineBreak) createAndAppendElementToParent("br", parent);
+  const input = createAndAppendElementToParent("input", parent);
+  label.htmlFor = inputId;
+  label.innerText = labelText;
+  input.type = "text";
+  input.id = inputId;
+  input.name = inputId;
+
+  return input;
+}
+
+/**
+ * @type {{id: string, label: string}[]}
+ */
+const formData = [
+  { id: "kolto_nev", label: "Költő neve:" },
+  { id: "korszak", label: "Korszak:" },
+  { id: "szerelem1", label: "Szerelme:" },
+  { id: "szerelem2", label: "Szerelme:" },
+];
+
+const form = createAndAppendElementToParent("form", document.body);
+const h2 = createAndAppendElementToParent("h2", form);
+form.id = "form_js";
+h2.innerText = "Javascript űrlap";
+
+for (const data of formData) {
+  createLabelAndInputAndAppendToForm(data.id, data.label, form, true);
+  createAndAppendElementToParent("br", form);
+  createAndAppendElementToParent("br", form);
+}
+
+const button = createAndAppendElementToParent("button", form);
+button.innerText = "Hozzáadás";
