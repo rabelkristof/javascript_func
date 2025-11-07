@@ -114,4 +114,41 @@ form.addEventListener("submit", function (e) {
     author2,
     title2,
   };
+
+  const tBody = /** @type {HTMLTableSectionElement} */ (
+    document.getElementById("tbody")
+  );
+
+  const tr = document.createElement("tr");
+  tBody.appendChild(tr);
+
+  const nationalityElem = document.createElement("td");
+  const author1Elem = document.createElement("td");
+  const title1Elem = document.createElement("td");
+
+  nationalityElem.innerText = obj.nationality;
+  author1Elem.innerText = obj.author1;
+  title1Elem.innerText = obj.title1;
+
+  tr.appendChild(nationalityElem);
+  tr.appendChild(author1Elem);
+  tr.appendChild(title1Elem);
+
+  if (obj.author2 && obj.title2) {
+    nationalityElem.rowSpan = 2;
+    const tr2 = document.createElement("tr");
+    const author2 = document.createElement("td");
+    const title2 = document.createElement("td");
+    author2.innerText = obj.author2;
+    title2.innerText = obj.title2;
+
+    tBody.appendChild(tr2);
+    tr2.appendChild(author2);
+    tr2.appendChild(title2);
+  }
+
+  nationalityElem.addEventListener("click", function (e) {
+    const target = /** @type {HTMLTableCellElement} */ (e.target);
+    target.classList.add("marked");
+  });
 });
