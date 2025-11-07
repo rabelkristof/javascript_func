@@ -195,3 +195,4 @@ for (const data of formData) {
 
 const button = createAndAppendElementToParent("button", form);
 button.innerText = "Hozzáadás";
+document.getElementById("form_js")?.addEventListener("submit", onFormSubmit);

@@ -4,7 +4,7 @@
 const headers = ["Nemzetiség", "Szerző", "Mű"];
 
 /**
- * @type {{nationality: string, author1: string, title1: string, author2?: string, title2?: string }[]}
+ * @type {{nationality: string, author1: string, title1: string, author2?: string, title2?: string}[]}
  */
 const data = [
   {
@@ -22,7 +22,11 @@ const data = [
     author2: "József Attila",
     title2: "Klárisok",
   },
-  { nationality: "Svájc", author1: "Friedrich Dürrenmatt", title1: "A fizikusok" },
+  {
+    nationality: "Svájc",
+    author1: "Friedrich Dürrenmatt",
+    title1: "A fizikusok",
+  },
 ];
 
 let table = document.createElement("table");
@@ -69,4 +73,45 @@ for (const row of data) {
     tr2.appendChild(author2);
     tr2.appendChild(title2);
   }
+
+  nationality.addEventListener("click", function (e) {
+    const target = /** @type {HTMLTableCellElement} */ (e.target);
+    target.classList.add("marked");
+  });
 }
+
+const form = /** @type {HTMLFormElement} */ (
+  document.getElementById("htmlform")
+);
+
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
+  const target = /** @type {HTMLFormElement} */ (e.target);
+  const nemzetiseg = /** @type {HTMLInputElement} */ (
+    target.querySelector("#nemzetiseg")
+  );
+  const szerzo1 = /** @type {HTMLInputElement} */ (
+    target.querySelector("#szerzo1")
+  );
+  const mu1 = /** @type {HTMLInputElement} */ (target.querySelector("#mu1"));
+  const szerzo2 = /** @type {HTMLInputElement} */ (
+    target.querySelector("#szerzo2")
+  );
+  const mu2 = /** @type {HTMLInputElement} */ (target.querySelector("#mu2"));
+
+  const nationality = nemzetiseg.value;
+  const author1 = szerzo1.value;
+  const title1 = mu1.value;
+  const author2 = szerzo2.value;
+  const title2 = mu2.value;
+  /**
+   * @type {{nationality: string, author1: string, title1: string, author2?: string, title2?: string}}
+   */
+  const obj = {
+    nationality,
+    author1,
+    title1,
+    author2,
+    title2,
+  };
+});
