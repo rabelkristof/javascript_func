@@ -76,6 +76,13 @@ for (const row of data) {
 
   nationality.addEventListener("click", function (e) {
     const target = /** @type {HTMLTableCellElement} */ (e.target);
+    const tbody = /** @type {HTMLTableSectionElement} */ (
+      target.parentElement?.parentElement
+    );
+
+    const markedCell = tbody.querySelector(".marked");
+    if (markedCell) markedCell.classList.remove("marked");
+
     target.classList.add("marked");
   });
 }
