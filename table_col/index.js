@@ -144,8 +144,6 @@ function onFormSubmit(event) {
   });
 }
 
-document.getElementById("form")?.addEventListener("submit", onFormSubmit);
-
 /**
  * Létrehoz egy labelt a labelText szöveggel és egy inputot és hozzáfűzi a parent-hez.
  * @param {string} inputId Az id amit az input id-ja, name-je és a label for-ja lesz.
@@ -196,3 +194,4 @@ for (const data of formData) {
 const button = createAndAppendElementToParent("button", form);
 button.innerText = "Hozzáadás";
 document.getElementById("form_js")?.addEventListener("submit", onFormSubmit);
+document.getElementById("form")?.addEventListener("submit", onFormSubmit);
