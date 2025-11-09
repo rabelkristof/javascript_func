@@ -4,7 +4,11 @@
 const headers = ["Nemzetiség", "Szerző", "Mű"];
 
 /**
- * @type {{nationality: string, author1: string, title1: string, author2?: string, title2?: string}[]}
+ * @typedef {{nationality: string, author1: string, title1: string, author2?: string, title2?: string}} TableRow
+ */
+
+/**
+ * @type {TableRow[]}
  */
 const data = [
   {
@@ -32,6 +36,7 @@ const data = [
 let table = document.createElement("table");
 let tHead = document.createElement("thead");
 let tBody = document.createElement("tbody");
+tBody.id = "jsTBody";
 let headerRow = document.createElement("tr");
 
 document.body.appendChild(table);
@@ -45,53 +50,13 @@ for (const header of headers) {
   headerRow.appendChild(th);
 }
 
-for (const row of data) {
-  const tr = document.createElement("tr");
-  tBody.appendChild(tr);
+renderTableBody(data);
 
-  const nationality = document.createElement("td");
-  const author1 = document.createElement("td");
-  const title1 = document.createElement("td");
-
-  nationality.innerText = row.nationality;
-  author1.innerText = row.author1;
-  title1.innerText = row.title1;
-
-  tr.appendChild(nationality);
-  tr.appendChild(author1);
-  tr.appendChild(title1);
-
-  if (row.author2 && row.title2) {
-    nationality.rowSpan = 2;
-    const tr2 = document.createElement("tr");
-    const author2 = document.createElement("td");
-    const title2 = document.createElement("td");
-    author2.innerText = row.author2;
-    title2.innerText = row.title2;
-
-    tBody.appendChild(tr2);
-    tr2.appendChild(author2);
-    tr2.appendChild(title2);
-  }
-
-  nationality.addEventListener("click", function (e) {
-    const target = /** @type {HTMLTableCellElement} */ (e.target);
-    const tbody = /** @type {HTMLTableSectionElement} */ (
-      target.parentElement?.parentElement
-    );
-
-    const markedCell = tbody.querySelector(".marked");
-    if (markedCell) markedCell.classList.remove("marked");
-
-    target.classList.add("marked");
-  });
-}
-
-const form = /** @type {HTMLFormElement} */ (
+const htmlForm = /** @type {HTMLFormElement} */ (
   document.getElementById("htmlform")
 );
 
-form.addEventListener("submit", function (e) {
+htmlForm.addEventListener("submit", function (e) {
   e.preventDefault();
   const target = /** @type {HTMLFormElement} */ (e.target);
   const nemzetiseg = /** @type {HTMLInputElement} */ (
@@ -112,7 +77,7 @@ form.addEventListener("submit", function (e) {
   const author2 = szerzo2.value;
   const title2 = mu2.value;
   /**
-   * @type {{nationality: string, author1: string, title1: string, author2?: string, title2?: string}}
+   * @type {TableRow}
    */
   const obj = {
     nationality,
@@ -159,5 +124,147 @@ form.addEventListener("submit", function (e) {
     target.classList.add("marked");
   });
 
-  form.reset();
+  htmlForm.reset();
+});
+
+/**
+ * Rendereli a tbody-t a megadott adatok alapján.
+ * A tbody amit renderel az a jsTBody id-val rendelkező tbody.
+ * @param {TableRow[]} data egy TableRow array
+ * @returns {void}
+ */
+function renderTableBody(data) {
+  const tBody = /** @type {HTMLTableSectionElement} */ (
+    document.getElementById("jsTBody")
+  );
+  tBody.innerHTML = "";
+  for (const row of data) {
+    const tr = document.createElement("tr");
+    tBody.appendChild(tr);
+
+    const nationality = document.createElement("td");
+    const author1 = document.createElement("td");
+    const title1 = document.createElement("td");
+
+    nationality.innerText = row.nationality;
+    author1.innerText = row.author1;
+    title1.innerText = row.title1;
+
+    tr.appendChild(nationality);
+    tr.appendChild(author1);
+    tr.appendChild(title1);
+
+    if (row.author2 && row.title2) {
+      nationality.rowSpan = 2;
+      const tr2 = document.createElement("tr");
+      const author2 = document.createElement("td");
+      const title2 = document.createElement("td");
+      author2.innerText = row.author2;
+      title2.innerText = row.title2;
+
+      tBody.appendChild(tr2);
+      tr2.appendChild(author2);
+      tr2.appendChild(title2);
+    }
+
+    nationality.addEventListener("click", function (e) {
+      const target = /** @type {HTMLTableCellElement} */ (e.target);
+      const tbody = /** @type {HTMLTableSectionElement} */ (
+        target.parentElement?.parentElement
+      );
+
+      const markedCell = tbody.querySelector(".marked");
+      if (markedCell) markedCell.classList.remove("marked");
+
+      target.classList.add("marked");
+    });
+  }
+}
+
+// Nem csináltunk jsform-ot.
+// Remélem saját kódból szabad másolni.
+
+/**
+ * Létrehoz egy labelt a labelText szöveggel és egy inputot és hozzáfűzi a parent-hez.
+ * @param {string} inputId Az id amit az input id-ja, name-je és a label for-ja lesz.
+ * @param {string} labelText A szöveg amit a labelbe írunk.
+ * @param {HTMLFormElement} parent A form, amihez appendeljük.
+ * @param {boolean} lineBreak Rakjunk-e linebreaket közéjük (br tag)
+ * @returns {HTMLInputElement} A létrehozott input.
+ */
+function createLabelAndInputAndAppendToForm(
+  inputId,
+  labelText,
+  parent,
+  lineBreak
+) {
+  const label = createAndAppendElementToParent("label", parent);
+  if (lineBreak) createAndAppendElementToParent("br", parent);
+  const input = createAndAppendElementToParent("input", parent);
+  label.htmlFor = inputId;
+  label.innerText = labelText;
+  input.type = "text";
+  input.id = inputId;
+  input.name = inputId;
+
+  return input;
+}
+
+/**
+ * Létrehoz egy elemet az elementType alapján és hozzáfűzi a parent-hez.
+ * @template K
+ * @param {K extends keyof HTMLElementTagNameMap ? K : never} elementType az element amit létre akarunk hozni
+ * @param {HTMLElement} parent az element amihez hozzá akarunk fűzni
+ * @returns {HTMLElementTagNameMap[K]} az element amit létrehoztunk
+ */
+function createAndAppendElementToParent(elementType, parent) {
+  const elem = document.createElement(elementType);
+  parent.appendChild(elem);
+
+  return elem;
+}
+
+/**
+ * @type {{id: string, label: string}[]}
+ */
+const formData = [
+  { id: "nemzetisegJs", label: "Nemzetiség" },
+  { id: "szerzo1Js", label: "Szerző" },
+  { id: "mu1Js", label: "Mű" },
+  { id: "szerzo2Js", label: "Szerző" },
+  { id: "mu2Js", label: "Mű" },
+];
+
+const jsForm = createAndAppendElementToParent("form", document.body);
+for (const data of formData) {
+  createLabelAndInputAndAppendToForm(data.id, data.label, jsForm, true);
+  createAndAppendElementToParent("br", jsForm);
+  createAndAppendElementToParent("br", jsForm);
+}
+
+const button = createAndAppendElementToParent("button", jsForm);
+button.innerText = "Hozzáadás";
+jsForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const nationality = /**@type {HTMLInputElement} */ (
+    document.getElementById("nemzetisegJs")
+  ).value;
+  const author1 = /**@type {HTMLInputElement} */ (
+    document.getElementById("szerzo1Js")
+  ).value;
+  const title1 = /**@type {HTMLInputElement} */ (
+    document.getElementById("mu1Js")
+  ).value;
+  const author2 = /**@type {HTMLInputElement} */ (
+    document.getElementById("szerzo2Js")
+  ).value;
+  const title2 = /**@type {HTMLInputElement} */ (
+    document.getElementById("mu2Js")
+  ).value;
+
+  data.push({ nationality, author1, title1, author2, title2 });
+
+  renderTableBody(data);
+  jsForm.reset();
 });
