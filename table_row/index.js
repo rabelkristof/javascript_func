@@ -158,4 +158,6 @@ form.addEventListener("submit", function (e) {
     const target = /** @type {HTMLTableCellElement} */ (e.target);
     target.classList.add("marked");
   });
+
+  form.reset();
 });
