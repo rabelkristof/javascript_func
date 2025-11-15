@@ -84,8 +84,8 @@ function createLabelAndInputAndAppendToForm(
 
 /**
  * Létrehoz egy elemet az elementType alapján és hozzáfűzi a parent-hez.
- * @template K
- * @param {K extends keyof HTMLElementTagNameMap ? K : never} elementType az element amit létre akarunk hozni
+ * @template {keyof HTMLElementTagNameMap} K
+ * @param {K} elementType az element amit létre akarunk hozni
  * @param {HTMLElement} parent az element amihez hozzá akarunk fűzni
  * @returns {HTMLElementTagNameMap[K]} az element amit létrehoztunk
  */
