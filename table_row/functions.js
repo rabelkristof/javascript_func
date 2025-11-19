@@ -1,11 +1,25 @@
 /**
  * @typedef {{nationality: string, author1: string, title1: string, author2?: string, title2?: string}} CountryWriters
+ * @typedef {{id: string, label: string}} FormLabelData
  */
+
+/**
+ * Generál egy header-t a table-nek.
+ * @param {HTMLTableElement} table A table amihez csináljuk a headert.
+ * @param {string[]} headerList Egy array amiben a headerek szövegei vannak benne.
+ */
+function generateHeader(table, headerList) {
+  const thead = createAndAppendElementToParent("thead", table);
+  const tr = createAndAppendElementToParent("tr", thead);
+  for (const header of headerList) {
+    createAndAppendCellToParentRow("th", header, tr);
+  }
+}
 
 /**
  * Rendereli a tbody-t a megadott adatok alapján.
  * A tbody amit renderel az a jsTBody id-val rendelkező tbody.
- * @param {HTMLTableElement} table
+ * @param {HTMLTableElement} table A table element.
  * @param {CountryWriters[]} data egy CountryWriters array
  * @returns {void}
  */
@@ -56,21 +70,32 @@ function renderTableRow(tBody, writerRow) {
 }
 
 /**
+ * Létrehoz egy table element-et és appendeli a parent-hez.
+ * @param {string[]} headers A headerek szövege.
+ * @param {string} tbodyId Az id amit beállítunk a tbody-nak.
+ * @param {HTMLElement} parent A parent amihez appendeljük a létrehozott table-t.
+ * @returns {HTMLTableElement} A létrehozott table.
+ */
+function createAndAppendTable(headers, tbodyId, parent) {
+  const table = createAndAppendElementToParent("table", parent);
+  generateHeader(table, headers);
+  const tbody = createAndAppendElementToParent("tbody", table);
+  tbody.id = tbodyId;
+
+  return table;
+}
+
+/**
  * Létrehoz egy labelt a labelText szöveggel és egy inputot és hozzáfűzi a parent-hez.
  * @param {string} inputId Az id amit az input id-ja, name-je és a label for-ja lesz.
  * @param {string} labelText A szöveg amit a labelbe írunk.
  * @param {HTMLFormElement} parent A form, amihez appendeljük.
- * @param {boolean} lineBreak Rakjunk-e linebreaket közéjük (br tag)
+ * @returns {void}
  */
-function createLabelAndInputAndAppendToForm(
-  inputId,
-  labelText,
-  parent,
-  lineBreak
-) {
+function createLabelAndInputAndAppendToForm(inputId, labelText, parent) {
   const div = createAndAppendElementToParent("div", parent);
   const label = createAndAppendElementToParent("label", div);
-  if (lineBreak) createAndAppendElementToParent("br", div);
+  createAndAppendElementToParent("br", div);
   const input = createAndAppendElementToParent("input", div);
   label.htmlFor = inputId;
   label.innerText = labelText;
@@ -80,6 +105,27 @@ function createLabelAndInputAndAppendToForm(
 
   const span = createAndAppendElementToParent("span", div);
   span.classList.add("error");
+}
+
+/**
+ * Létrehoz egy form-ot és appendeli a parent-hez.
+ * @param {string} id Az id amit beállítunk a form-nak.
+ * @param {FormLabelData[]} formData A labelek a szövege.
+ * @param {HTMLElement} parent A parent element amihez appendeljük a table-t.
+ * @returns {HTMLFormElement} A létrehozott table.
+ */
+function createAndAppendForm(id, formData, parent) {
+  const form = createAndAppendElementToParent("form", parent);
+  for (const field of formData) {
+    createLabelAndInputAndAppendToForm(field.id, `${field.label}:`, form);
+    createAndAppendElementToParent("br", form);
+  }
+  createAndAppendElementToParent("br", form);
+
+  const button = createAndAppendElementToParent("button", form);
+  button.innerText = "Hozzáadás";
+
+  return form;
 }
 
 /**
@@ -108,19 +154,6 @@ function createAndAppendCellToParentRow(cellType, content, parentRow) {
   cell.innerText = content;
 
   return cell;
-}
-
-/**
- * Generál egy header-t a table-nek.
- * @param {HTMLTableElement} table A table amihez csináljuk a headert.
- * @param {string[]} headerList Egy array amiben a headerek szövegei vannak benne.
- */
-function generateHeader(table, headerList) {
-  const thead = createAndAppendElementToParent("thead", table);
-  const tr = createAndAppendElementToParent("tr", thead);
-  for (const header of headerList) {
-    createAndAppendCellToParentRow("th", header, tr);
-  }
 }
 
 /**

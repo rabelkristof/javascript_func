@@ -29,10 +29,7 @@ const data = [
   },
 ];
 
-let table = createAndAppendElementToParent("table", document.body);
-createAndAppendElementToParent("tbody", table);
-
-generateHeader(table, headers);
+let table = createAndAppendTable(headers, "jsTBody", document.body);
 renderTableBody(table, data);
 
 const htmlForm = /** @type {HTMLFormElement} */ (
@@ -42,7 +39,7 @@ const htmlForm = /** @type {HTMLFormElement} */ (
 htmlForm.addEventListener("submit", htmlEventListener);
 
 /**
- * @type {{id: string, label: string}[]}
+ * @type {FormLabelData[]}
  */
 const formData = [
   { id: "nemzetisegJs", label: "Nemzetiség" },
@@ -52,15 +49,7 @@ const formData = [
   { id: "mu2Js", label: "Mű" },
 ];
 
-const jsForm = createAndAppendElementToParent("form", document.body);
-for (const data of formData) {
-  createLabelAndInputAndAppendToForm(data.id, data.label, jsForm, true);
-  createAndAppendElementToParent("br", jsForm);
-  createAndAppendElementToParent("br", jsForm);
-}
-
-const button = createAndAppendElementToParent("button", jsForm);
-button.innerText = "Hozzáadás";
+const jsForm = createAndAppendForm("jsForm", formData, document.body);
 jsForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
