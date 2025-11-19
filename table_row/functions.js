@@ -18,7 +18,6 @@ function generateHeader(table, headerList) {
 
 /**
  * Rendereli a tbody-t a megadott adatok alapján.
- * A tbody amit renderel az a jsTBody id-val rendelkező tbody.
  * @param {HTMLTableElement} table A table element.
  * @param {CountryWriters[]} data egy CountryWriters array
  * @returns {void}
@@ -71,12 +70,12 @@ function renderTableRow(tBody, writerRow) {
 
 /**
  * Létrehoz egy table element-et és appendeli a parent-hez.
- * @param {string[]} headers A headerek szövege.
  * @param {string} tbodyId Az id amit beállítunk a tbody-nak.
+ * @param {string[]} headers A headerek szövege.
  * @param {HTMLElement} parent A parent amihez appendeljük a létrehozott table-t.
  * @returns {HTMLTableElement} A létrehozott table.
  */
-function createAndAppendTable(headers, tbodyId, parent) {
+function createAndAppendTable(tbodyId, headers, parent) {
   const table = createAndAppendElementToParent("table", parent);
   generateHeader(table, headers);
   const tbody = createAndAppendElementToParent("tbody", table);
@@ -120,7 +119,6 @@ function createAndAppendForm(id, formData, parent) {
     createLabelAndInputAndAppendToForm(field.id, `${field.label}:`, form);
     createAndAppendElementToParent("br", form);
   }
-  createAndAppendElementToParent("br", form);
 
   const button = createAndAppendElementToParent("button", form);
   button.innerText = "Hozzáadás";
@@ -157,7 +155,7 @@ function createAndAppendCellToParentRow(cellType, content, parentRow) {
 }
 
 /**
- *
+ * Eventlistener callback a html form-nak.
  * @param {Event} e
  */
 function htmlEventListener(e) {
@@ -175,27 +173,57 @@ function htmlEventListener(e) {
   );
   const mu2 = /** @type {HTMLInputElement} */ (target.querySelector("#mu2"));
 
-  const nationality = nemzetiseg.value;
-  const author1 = szerzo1.value;
-  const title1 = mu1.value;
-  const author2 = szerzo2.value;
-  const title2 = mu2.value;
-  /**
-   * @type {CountryWriters}
-   */
-  const obj = {
-    nationality,
-    author1,
-    title1,
-    author2,
-    title2,
-  };
-
-  const tBody = /** @type {HTMLTableSectionElement} */ (
-    document.getElementById("tbody")
+  const errorFields = /** @type {NodeListOf<HTMLSpanElement>} */ (
+    target.querySelectorAll(".error")
   );
+  for (const error of errorFields) {
+    error.innerText = "";
+  }
 
-  renderTableRow(tBody, obj);
+  if (validateFields("A mező kitöltése kötelező", nemzetiseg, szerzo1, mu1)) {
+    const nationality = nemzetiseg.value;
+    const author1 = szerzo1.value;
+    const title1 = mu1.value;
+    const author2 = szerzo2.value;
+    const title2 = mu2.value;
+    /**
+     * @type {CountryWriters}
+     */
+    const obj = {
+      nationality,
+      author1,
+      title1,
+      author2,
+      title2,
+    };
 
-  target.reset();
+    const tBody = /** @type {HTMLTableSectionElement} */ (
+      document.getElementById("tbody")
+    );
+
+    renderTableRow(tBody, obj);
+
+    target.reset();
+  }
+}
+
+/**
+ * Megnézi, hogy minden input field tartalmaz-e szöveget.
+ * @param {string} errorText A szöveg amit hiba esetén ki akarunk írni.
+ * @param  {...HTMLInputElement} inputs Az inputok amiket validálni kell.
+ * @returns {boolean} Sikeres volt-e vagy sem.
+ */
+function validateFields(errorText, ...inputs) {
+  let success = true;
+  for (const input of inputs) {
+    if (!input.value) {
+      success = false;
+      const parent = /** @type {HTMLDivElement} */ (input.parentElement);
+      /** @type {HTMLSpanElement} */ (
+        parent.querySelector(".error")
+      ).innerText = errorText;
+    }
+  }
+
+  return success;
 }

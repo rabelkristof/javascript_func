@@ -1,7 +1,16 @@
 /**
- * @type {string[]}
+ * @type {{headers: string[], formData: FormLabelData[]}}
  */
-const headers = ["Nemzetiség", "Szerző", "Mű"];
+const constantData = {
+  headers: ["Nemzetiség", "Szerző", "Mű"],
+  formData: [
+    { id: "nemzetisegJs", label: "Nemzetiség" },
+    { id: "szerzo1Js", label: "Szerző" },
+    { id: "mu1Js", label: "Mű" },
+    { id: "szerzo2Js", label: "Szerző" },
+    { id: "mu2Js", label: "Mű" },
+  ],
+};
 
 /**
  * @type {CountryWriters[]}
@@ -29,7 +38,11 @@ const data = [
   },
 ];
 
-let table = createAndAppendTable(headers, "jsTBody", document.body);
+let table = createAndAppendTable(
+  "jsTBody",
+  constantData.headers,
+  document.body
+);
 renderTableBody(table, data);
 
 const htmlForm = /** @type {HTMLFormElement} */ (
@@ -38,39 +51,55 @@ const htmlForm = /** @type {HTMLFormElement} */ (
 
 htmlForm.addEventListener("submit", htmlEventListener);
 
-/**
- * @type {FormLabelData[]}
- */
-const formData = [
-  { id: "nemzetisegJs", label: "Nemzetiség" },
-  { id: "szerzo1Js", label: "Szerző" },
-  { id: "mu1Js", label: "Mű" },
-  { id: "szerzo2Js", label: "Szerző" },
-  { id: "mu2Js", label: "Mű" },
-];
-
-const jsForm = createAndAppendForm("jsForm", formData, document.body);
+const jsForm = createAndAppendForm(
+  "jsForm",
+  constantData.formData,
+  document.body
+);
 jsForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
   const nationality = /**@type {HTMLInputElement} */ (
     document.getElementById("nemzetisegJs")
-  ).value;
+  );
   const author1 = /**@type {HTMLInputElement} */ (
     document.getElementById("szerzo1Js")
-  ).value;
+  );
   const title1 = /**@type {HTMLInputElement} */ (
     document.getElementById("mu1Js")
-  ).value;
+  );
   const author2 = /**@type {HTMLInputElement} */ (
     document.getElementById("szerzo2Js")
-  ).value;
+  );
   const title2 = /**@type {HTMLInputElement} */ (
     document.getElementById("mu2Js")
-  ).value;
+  );
 
-  data.push({ nationality, author1, title1, author2, title2 });
+  const errorFields = /** @type {NodeListOf<HTMLSpanElement>} */ (
+    jsForm.querySelectorAll(".error")
+  );
+  for (const error of errorFields) {
+    error.innerText = "";
+  }
 
-  renderTableBody(table, data);
-  jsForm.reset();
+  if (
+    validateFields("A mező kitöltése kötelező", nationality, author1, title1)
+  ) {
+    const nationalityValue = nationality.value;
+    const author1Value = author1.value;
+    const title1Value = title1.value;
+    const author2Value = author2.value;
+    const title2Value = title2.value;
+
+    data.push({
+      nationality: nationalityValue,
+      author1: author1Value,
+      title1: title1Value,
+      author2: author2Value ? author2Value : undefined,
+      title2: title2Value ? title2Value : undefined,
+    });
+
+    jsForm.reset();
+    renderTableBody(table, data);
+  }
 });
