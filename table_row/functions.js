@@ -18,13 +18,13 @@ function generateHeader(table, headerList) {
 
 /**
  * Rendereli a tbody-t a megadott adatok alapján.
- * @param {HTMLTableElement} table A table element.
+ * @param {string} tBodyId A table element.
  * @param {CountryWriters[]} data egy CountryWriters array
  * @returns {void}
  */
-function renderTableBody(table, data) {
+function renderTableBody(tBodyId, data) {
   const tBody = /** @type {HTMLTableSectionElement} */ (
-    table.querySelector("tbody")
+    document.getElementById(tBodyId)
   );
   tBody.innerHTML = "";
   for (const row of data) {
@@ -115,6 +115,7 @@ function createLabelAndInputAndAppendToForm(inputId, labelText, parent) {
  */
 function createAndAppendForm(id, formData, parent) {
   const form = createAndAppendElementToParent("form", parent);
+  form.id = id;
   for (const field of formData) {
     createLabelAndInputAndAppendToForm(field.id, `${field.label}:`, form);
     createAndAppendElementToParent("br", form);

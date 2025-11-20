@@ -38,12 +38,8 @@ const data = [
   },
 ];
 
-let table = createAndAppendTable(
-  "jsTBody",
-  constantData.headers,
-  document.body
-);
-renderTableBody(table, data);
+createAndAppendTable("jsTBody", constantData.headers, document.body);
+renderTableBody("jsTBody", data);
 
 const htmlForm = /** @type {HTMLFormElement} */ (
   document.getElementById("htmlform")
@@ -59,19 +55,19 @@ const jsForm = createAndAppendForm(
 jsForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const nationality = /**@type {HTMLInputElement} */ (
+  const nationality = /** @type {HTMLInputElement} */ (
     document.getElementById("nemzetisegJs")
   );
-  const author1 = /**@type {HTMLInputElement} */ (
+  const author1 = /** @type {HTMLInputElement} */ (
     document.getElementById("szerzo1Js")
   );
-  const title1 = /**@type {HTMLInputElement} */ (
+  const title1 = /** @type {HTMLInputElement} */ (
     document.getElementById("mu1Js")
   );
-  const author2 = /**@type {HTMLInputElement} */ (
+  const author2 = /** @type {HTMLInputElement} */ (
     document.getElementById("szerzo2Js")
   );
-  const title2 = /**@type {HTMLInputElement} */ (
+  const title2 = /** @type {HTMLInputElement} */ (
     document.getElementById("mu2Js")
   );
 
@@ -100,6 +96,6 @@ jsForm.addEventListener("submit", (e) => {
     });
 
     jsForm.reset();
-    renderTableBody(table, data);
+    renderTableBody("jsTBody", data);
   }
 });
