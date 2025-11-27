@@ -21,7 +21,12 @@
   </head>
   <body>
     <label for="tableselector">Js táblázat?</label>
-    <input type="checkbox" name="tableselector" id="tableselector" />
+    <input
+      type="checkbox"
+      name="tableselector"
+      id="tableselector"
+      autocomplete="off"
+    />
     <div id="htmlsection">
       <table>
         <thead>
@@ -61,6 +66,38 @@
           </tr>
         </tbody>
       </table>
+      <hr />
+      <form id="htmlform">
+        <div>
+          <label for="telepules">Ókori település:</label>
+          <br />
+          <input type="text" id="elso" name="telepules" /> <br />
+          <span class="error"></span>
+        </div>
+        <br />
+        <div>
+          <label for="agazat">Ágazat:</label>
+          <br />
+          <input type="text" id="masodik" name="agazat" /> <br />
+          <span class="error"></span>
+        </div>
+        <br />
+        <div>
+          <label for="pelda1">Példa:</label>
+          <br />
+          <input type="text" id="harmadik" name="pelda1" /> <br />
+          <span class="error"></span>
+        </div>
+        <br />
+        <div>
+          <label for="pelda2">Példa:</label>
+          <br />
+          <input type="text" id="negyedik" name="pelda2" /> <br />
+          <span class="error"></span>
+        </div>
+        <br />
+        <button type="submit">Hozzáadás</button>
+      </form>
     </div>
     <script src="./index.js"></script>
   </body>

@@ -1,6 +1,6 @@
 /**
- * @typedef {{branch: string, example: string}} Invention
- * @typedef {{settlement: string, inventions: Invention[]}} TableRow
+ * @typedef {{settlement: string, branch1: string, example1: string, branch2?: string, example2?: string}} TableRow
+ * @typedef {{id: string, name: string, text: string}} FormField
  */
 
 /**
@@ -14,21 +14,22 @@ const headers = ["Ókori település", "Ágazat", "Példa"];
 const tableData = [
   {
     settlement: "Athén",
-    inventions: [
-      { branch: "politika", example: "demokrácia" },
-      { branch: "tudomány", example: "filozófia" },
-    ],
+    branch1: "politika",
+    example1: "demokrácia",
+    branch2: "tudomány",
+    example2: "filozófia",
   },
   {
     settlement: "Egyiptom",
-    inventions: [{ branch: "mezőgazdaság", example: "csatornák" }],
+    branch1: "mezőgazdaság",
+    example1: "csatornák",
   },
   {
     settlement: "Spárta",
-    inventions: [
-      { branch: "neveléstudomány", example: "agogé" },
-      { branch: "harcászat", example: "hoplita" },
-    ],
+    branch1: "neveléstudomány",
+    example1: "agogé",
+    branch2: "harcászat",
+    example2: "hoplita",
   },
 ];
 
@@ -45,18 +46,18 @@ for (const title of headers) {
 }
 
 for (const row of tableData) {
-  const firstRow = createElement("tr", tbody);
-  const settlement = createElement("td", firstRow);
+  const tr1 = createElement("tr", tbody);
+  const settlement = createElement("td", tr1);
   settlement.innerText = row.settlement;
-  settlement.rowSpan = row.inventions.length;
 
-  // Az első sort manuálisan inserteljük.
-  createCell("td", row.inventions[0].branch, firstRow);
-  createCell("td", row.inventions[0].example, firstRow);
-  for (let i = 1; i < row.inventions.length; i++) {
-    const tr = createElement("tr", tbody);
-    createCell("td", row.inventions[i].branch, tr);
-    createCell("td", row.inventions[i].example, tr);
+  createCell("td", row.branch1, tr1);
+  createCell("td", row.example1, tr1);
+  if (row.branch2 && row.example2) {
+    settlement.rowSpan = 2;
+
+    const tr2 = createElement("tr", tbody);
+    createCell("td", row.branch2, tr2);
+    createCell("td", row.example2, tr2);
   }
 }
 
@@ -117,4 +118,52 @@ function createElement(tagName, parent) {
   parent.appendChild(elem);
 
   return elem;
+}
+
+/**
+ * @type {FormField[]}
+ */
+const formFields = [
+  { id: "elso", name: "telepules", text: "Település:" },
+  { id: "masodik", name: "agazat1", text: "Ágazat:" },
+  { id: "harmadik", name: "pelda1", text: "Példa:" },
+  { id: "negyedik", name: "agazat2", text: "Ágazat:" },
+  { id: "otodik", name: "pelda2", text: "Példa:" },
+];
+
+const form = createElement("form", div);
+
+for (const formField of formFields) {
+  const outerDiv = createElement("div", form);
+
+  createFormField(formField, outerDiv);
+
+  const span = createElement("span", outerDiv);
+  span.classList.add("error");
+
+  createElement("br", outerDiv);
+  createElement("br", form);
+}
+
+const button = createElement("button", form);
+button.type = "submit";
+button.innerText = "Hozzáadás";
+
+/**
+ * Létrehoz egy label-t és egy input-ot a megadott adat alapján, ezután hozzáadja a formhoz.
+ * @param {FormField} data
+ * @param {HTMLElement} parent Az element amihez hozzáadjuk
+ * @returns {void}
+ */
+function createFormField(data, parent) {
+  const label = createElement("label", parent);
+  label.htmlFor = data.name;
+  label.innerText = data.text;
+
+  createElement("br", parent);
+
+  const input = createElement("input", parent);
+  input.type = "text";
+  input.id = data.id;
+  input.name = data.name;
 }
