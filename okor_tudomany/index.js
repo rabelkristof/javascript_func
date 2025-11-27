@@ -1,6 +1,7 @@
 /**
  * @typedef {{settlement: string, branch1: string, example1: string, branch2?: string, example2?: string}} TableRow
  * @typedef {{id: string, name: string, text: string}} FormField
+ * @typedef {{settlement: string, branch: string, example1: string, example2?: string}} HTMLTableRow
  */
 
 /**
@@ -39,25 +40,36 @@ div.classList.add("hide");
 const table = createElement("table", div);
 const thead = createElement("thead", table);
 const tbody = createElement("tbody", table);
+tbody.id = "jstbody";
 
 for (const title of headers) {
   const header = createElement("th", thead);
   header.innerText = title;
 }
 
-for (const row of tableData) {
-  const tr1 = createElement("tr", tbody);
-  const settlement = createElement("td", tr1);
-  settlement.innerText = row.settlement;
+generateTableBody(tbody, tableData);
 
-  createCell("td", row.branch1, tr1);
-  createCell("td", row.example1, tr1);
-  if (row.branch2 && row.example2) {
-    settlement.rowSpan = 2;
+/**
+ * Legenerálja a table body-t az adatok alapján;
+ * @param {HTMLTableSectionElement} tbody
+ * @param {TableRow[]} data
+ * @returns {void}
+ */
+function generateTableBody(tbody, data) {
+  for (const row of data) {
+    const tr1 = createElement("tr", tbody);
+    const settlement = createElement("td", tr1);
+    settlement.innerText = row.settlement;
 
-    const tr2 = createElement("tr", tbody);
-    createCell("td", row.branch2, tr2);
-    createCell("td", row.example2, tr2);
+    createCell("td", row.branch1, tr1);
+    createCell("td", row.example1, tr1);
+    if (row.branch2 && row.example2) {
+      settlement.rowSpan = 2;
+
+      const tr2 = createElement("tr", tbody);
+      createCell("td", row.branch2, tr2);
+      createCell("td", row.example2, tr2);
+    }
   }
 }
 
@@ -132,6 +144,7 @@ const formFields = [
 ];
 
 const form = createElement("form", div);
+form.id = "jsform";
 
 for (const formField of formFields) {
   const outerDiv = createElement("div", form);
@@ -166,4 +179,150 @@ function createFormField(data, parent) {
   input.type = "text";
   input.id = data.id;
   input.name = data.name;
+}
+
+/** @type {HTMLFormElement} */ (
+  document.getElementById("htmlform")
+).addEventListener("submit", htmlSubmitHandler);
+
+/**
+ * Handleli a html form submitolását. Ellenőrzi az adatokat, jelzi, ha hiba van, és frissíti a táblázatot.
+ * @param {SubmitEvent} e
+ */
+function htmlSubmitHandler(e) {
+  e.preventDefault();
+
+  // Nem nullok, mert benne vannak a html-ben.
+  const form = /** @type {HTMLFormElement} */ (
+    document.getElementById("htmlform")
+  );
+  const telepules = /** @type {HTMLInputElement} */ (
+    form.querySelector("#elso")
+  );
+  const agazat = /** @type {HTMLInputElement} */ (
+    form.querySelector("#masodik")
+  );
+  const pelda1 = /** @type {HTMLInputElement} */ (
+    form.querySelector("#harmadik")
+  );
+  const pelda2 = /** @type {HTMLInputElement} */ (
+    form.querySelector("#negyedik")
+  );
+
+  for (const span of /** @type {NodeListOf<HTMLSpanElement>} */ (
+    form.querySelectorAll(".error")
+  )) {
+    span.innerText = "";
+  }
+
+  if (validateFields("A mező kitöltése kötelező!", telepules, agazat, pelda1)) {
+    const htmlTBody = /** @type {HTMLTableSectionElement} */ (
+      document.getElementById("htmltbody")
+    );
+    /** @type {HTMLTableRow} */
+    const rowData = {
+      settlement: telepules.value,
+      branch: agazat.value,
+      example1: pelda1.value,
+      example2: pelda2.value ? pelda2.value : undefined,
+    };
+    appendTableRowToHTMLTable(rowData, htmlTBody);
+  }
+}
+
+/**
+ * Validálja a megadott mezőket, hogy üresek-e, és ha azok, megjeleníti a megadott szöveggel az error spaneket és visszatér a validáció sikerességével.
+ * @param {string} message Az error message
+ * @param  {...HTMLInputElement} fields A mezők amiket ellenőrizni kell
+ * @returns {boolean}
+ */
+function validateFields(message, ...fields) {
+  let success = true;
+  for (const field of fields) {
+    if (!field.value) {
+      // Nem nullok mert korábban létrehoztuk őket.
+      const div = /** @type {HTMLDivElement} */ (field.parentElement);
+      const span = /** @type {HTMLSpanElement} */ (div.querySelector(".error"));
+      span.innerText = message;
+      success = false;
+    }
+  }
+
+  return success;
+}
+
+/**
+ * Hozzáfűz egy új sort a megadott táblázathoz.
+ * @param {HTMLTableRow} rowData A hozzáfűzendő sor adatai
+ * @param {HTMLTableSectionElement} tableBody A tbody amihez hozzáfűzűnk
+ * @returns {void}
+ */
+function appendTableRowToHTMLTable(rowData, tableBody) {
+  const tr = createElement("tr", tableBody);
+  createCell("td", rowData.settlement, tr);
+  createCell("td", rowData.branch, tr);
+  const example1 = createCell("td", rowData.example1, tr);
+
+  if (rowData.example2) {
+    createCell("td", rowData.example2, tr);
+  } else {
+    example1.colSpan = 2;
+  }
+}
+
+form.addEventListener("submit", jsSubmitHandler);
+
+/**
+ * Handleli a html form submitolását. Ellenőrzi az adatokat, jelzi, ha hiba van, és frissíti a táblázatot.
+ * @param {Event} e
+ * @returns {void}
+ */
+function jsSubmitHandler(e) {
+  e.preventDefault();
+
+  // Nem nullok, mert benne vannak a html-ben.
+  const form = /** @type {HTMLFormElement} */ (
+    document.getElementById("jsform")
+  );
+  const telepules = /** @type {HTMLInputElement} */ (
+    form.querySelector("#elso")
+  );
+  const agazat1 = /** @type {HTMLInputElement} */ (
+    form.querySelector("#masodik")
+  );
+  const pelda1 = /** @type {HTMLInputElement} */ (
+    form.querySelector("#harmadik")
+  );
+  const agazat2 = /** @type {HTMLInputElement} */ (
+    form.querySelector("#negyedik")
+  );
+  const pelda2 = /** @type {HTMLInputElement} */ (
+    form.querySelector("#otodik")
+  );
+
+  for (const span of /** @type {NodeListOf<HTMLSpanElement>} */ (
+    form.querySelectorAll(".error")
+  )) {
+    span.innerText = "";
+  }
+
+  if (validateFields("A mező kitöltése kötelező", telepules, agazat1, pelda1)) {
+    /**
+     * @type {TableRow}
+     */
+    const rowData = {
+      settlement: telepules.value,
+      branch1: agazat1.value,
+      example1: pelda1.value,
+      branch2: agazat2.value ? agazat2.value : undefined,
+      example2: pelda2.value ? pelda2.value : undefined,
+    };
+    tableData.push(rowData);
+
+    const tableBody = /** @type {HTMLTableSectionElement} */ (
+      document.getElementById("jstbody")
+    );
+    tableBody.innerHTML = "";
+    generateTableBody(tableBody, tableData);
+  }
 }
