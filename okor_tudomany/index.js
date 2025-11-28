@@ -227,6 +227,8 @@ function htmlSubmitHandler(e) {
       example2: pelda2.value ? pelda2.value : undefined,
     };
     appendTableRowToHTMLTable(rowData, htmlTBody);
+
+    form.reset();
   }
 }
 
@@ -324,5 +326,7 @@ function jsSubmitHandler(e) {
     );
     tableBody.innerHTML = "";
     generateTableBody(tableBody, tableData);
+
+    form.reset();
   }
 }
